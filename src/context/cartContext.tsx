@@ -1,17 +1,24 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import { createContext, useContext, useReducer } from "react";
+import type { ReactNode, Reducer } from "react";
+import type { Skip } from "../api/skips/types";
 
-type CartItem = {
-  id: string
-}
+type Cart = {
+  total: number,
+  items: Skip[]
+};
 
-type CartItems = CartItem[];
+const initCart: Cart = {
+  total: 0,
+  items: []
+};
 
-const initCart: CartItems = [];
+type ACTIONTYPE =
+  | { type: "add"; skip: Skip }
+  | { type: "remove"; skip: Skip }
 
 type CartContexType = {
-  cart: CartItems,
-  addToCart: (action: CartItem) => void;
+  cart: Cart,
+  dispatch: (action: ACTIONTYPE) => void;
 };
 
 const CartContext = createContext({} as CartContexType);
@@ -21,18 +28,10 @@ export function CartProvider({
 }: {
   children: ReactNode
 }) {
-  const [cart, setCart] = useState<CartItems>(initCart);
-
-  const addToCart = (cartItems: CartItems) => {
-    console.log(cartItems)
-  };
-
-  useEffect(() => {
-
-  }, []);
+  const [cart, dispatch] = useReducer<Reducer<CartItems, ACTIONTYPE>>(cartReducer, initCart);
   
   return (
-    <CartContext.Provider value={{cart, addToCart}}>
+    <CartContext.Provider value={{cart, dispatch}}>
       {children}
     </CartContext.Provider>
   )
@@ -41,3 +40,23 @@ export function CartProvider({
 export function useCart() {
   return useContext(CartContext);
 };
+
+function cartReducer(cart: Cart, action: ACTIONTYPE): Cart {
+  switch(action.type) {
+    case 'add': {
+      return {
+        total: cart.total + action.skip.price_before_vat,
+        items: [...cart.items, action.skip]
+      }
+    }
+    case 'remove': {
+      return {
+        total: cart.total - action.skip.price_before_vat,
+        items: cart.items.filter((s) => s.id !== action.skip.id)
+      }
+    }
+    default: {
+      return cart;
+    }
+  }
+} // NOTE: I used here immutabilities which is strongly recommended to handle complex data handling.

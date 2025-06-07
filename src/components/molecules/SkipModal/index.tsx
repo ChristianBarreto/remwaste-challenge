@@ -1,14 +1,18 @@
 import type { Skip } from "../../../api/skips/types"
 import { imgUrl } from "../../../api"
-import IconInfo from "../../atoms/IconInfo"
 import ImageryTooltip from "../../atoms/ImageryTooltip"
 import RoadAlert from "../../atoms/RoadAlert"
+import { useCart } from '../../../context/cartContext'
+
 
 export default function SkipModal({
   skip,
 }: {
   skip: Skip
 }) {
+  const {cart, dispatch} = useCart();
+  const added = cart.items.some((s) => s.id === skip.id);
+
   return (
     <dialog id={`skip-modal-${skip.id}`} className="modal">
       <div className="modal-box">
@@ -27,15 +31,24 @@ export default function SkipModal({
             <ImageryTooltip />
             {!skip.allowed_on_road && <RoadAlert />}
           </div>
-          <p>{`${skip.hire_period_days} day hire period`}</p>
+          <p className="font-bold">{`${skip.hire_period_days} day hire period`}</p>
           <p>
             I decided to create this modal to have more space to add a good description 
-            technical specifications of the skip not only for common customers but for civil constructors.
+            technical and specifications of the skip not only for common customers but for civil constructors.
+            I also decided to create a Cart to be able to purchase more then one product.
           </p>
-          <p className="text-primary text-xl font-bold">&#163;{`${skip.price_before_vat}`}</p>
+          <p className="text-primary text-xl font-bold text-right pb-4">Price: &#163;{`${skip.price_before_vat}`}</p>
         </div>
         <div className="card-actions flex justify-end">
-          <button className="btn btn-primary w-30">Add to cart</button>
+          <form method="dialog">
+            <button
+              className="btn btn-primary w-30"
+              onClick={() => dispatch({type: 'add', skip})}
+              disabled={added}
+            >
+              {added ? <>Added</> : <>Add to cart</>}
+            </button>
+          </form>
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">

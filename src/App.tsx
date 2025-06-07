@@ -7,7 +7,7 @@ function App() {
 
   return (
     <StoreTemplate>
-      <Hero hello="hello" />
+      <Hero />
       <ProductList />
     </StoreTemplate>
   )

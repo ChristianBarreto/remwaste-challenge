@@ -1,15 +1,18 @@
 import { baseUrl } from "..";
 import type { SkipsResponse } from "./types";
 
-export async function getSkipsByLocation(query: unknown): Promise<SkipsResponse> {
-  try {
-    const response = await fetch(`${baseUrl}skips/by-location?${query}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  } catch (error) {
-    console.error("Error fetching skips:", error);
-    return [];
-  }
-}
+export const getSkipsByLocation = (query: unknown): Promise<SkipsResponse> => new Promise((resolve, reject) => {
+  fetch(`${baseUrl}skips/by-location?${query}`)
+    .then((res) => {
+      if (!res.ok) {
+        reject(res.status);
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }else {
+        resolve(res.json())
+      }
+    })
+    .catch((err) => {
+      reject(err);
+      throw new Error(`Fetch error!`);
+    })
+})
