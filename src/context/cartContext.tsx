@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
-import type { ReactNode, Reducer } from "react";
+import type { ReactNode } from "react";
 import type { Skip } from "../api/skips/types";
 
 type Cart = {
@@ -28,7 +28,7 @@ export function CartProvider({
 }: {
   children: ReactNode
 }) {
-  const [cart, dispatch] = useReducer<Reducer<CartItems, ACTIONTYPE>>(cartReducer, initCart);
+  const [cart, dispatch] = useReducer(cartReducer, initCart);
   
   return (
     <CartContext.Provider value={{cart, dispatch}}>

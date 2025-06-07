@@ -13,7 +13,7 @@ export default function SkipCard({
     <div
       key={skip.id}
       className={`card shadow-md cursor-pointer hover:bg-lime-200 hover:outline-1 hover:outline-lime-300`}
-      onClick={()=> document?.getElementById(`skip-modal-${skip.id}`)?.showModal()}
+      onClick={()=> (document?.getElementById(`skip-modal-${skip.id}`) as HTMLDialogElement).showModal()}
     >
       <figure className="">  
         <img
