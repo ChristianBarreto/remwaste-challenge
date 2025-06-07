@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import type { SkipsResponse } from "../../../api/skips/types"
-import { useCart } from "../../../context/cartContext"
 import { getSkipsByLocation } from "../../../api/skips"
 import SkipCard from "../../molecules/SkipCard"
 import CardSkeleton from "../../cells/CardSkeleton"
@@ -9,7 +8,6 @@ export default function ProductList() {
   const [skips, setSkips] = useState<SkipsResponse>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-  const { cart, addToCart } = useCart();
   
   useEffect(() => {
     const queryString = `postcode=LE10&area=Hinckley`; // Note: This query string can be improved using 'qs'
